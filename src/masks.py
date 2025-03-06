@@ -16,3 +16,13 @@ def get_mask_account(account_number: int) -> str:
     account_number_str = str(account_number)  # Преобразуем номер счёта в строку
 
     return "**" + account_number_str[-4:]  # Формируем маску номера счёта
+
+
+
+def mask_account_card(card_account_number:str) ->int:
+ """Функция принимает на вход строку c номером карты или счета"""
+
+
+def get_date(date:str) ->str:
+    """Функция принимает на вход строку и отдает дату"""
+
