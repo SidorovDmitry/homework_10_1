@@ -27,15 +27,23 @@ def mask_account_card(card_account_number: str) -> str:
 
 
 def get_date(date_string: str) -> str:
-    """Функция принимает на вход строку с датой в формате '2024-03-11T02:26:18.671407' и возвращает строку с датой в формате 'ДД.ММ.ГГГГ'."""
+    """
+    Функция принимает на вход строку с датой в формате '2024-03-11T02:26:18.671407'
+    и возвращает строку с датой в формате 'ДД.ММ.ГГГГ'.
+    """
+    try:
+        # Разделяем дату и время
+        date_part = date_string.split("T")[0]
 
-    # Разделяем дату и время
-    date_part = date_string.split("T")[0]
+        # Разделяем дату на год, месяц и день
+        year, month, day = date_part.split("-")
 
-    # Разделяем дату на год, месяц и день
-    year, month, day = date_part.split("-")
+        # Проверяем, что год, месяц и день являются числами
+        if not (year.isdigit() and month.isdigit() and day.isdigit()):
+            return "Некорректный формат даты"
 
-    # Формируем строку с датой в нужном формате
-    formatted_date = f"{day}.{month}.{year}"
-
-    return formatted_date
+        # Формируем строку с датой в нужном формате
+        formatted_date = f"{day}.{month}.{year}"
+        return formatted_date
+    except (IndexError, ValueError):
+        return "Некорректный формат даты"
