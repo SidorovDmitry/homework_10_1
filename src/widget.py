@@ -26,3 +26,16 @@ def mask_account_card(card_account_number: str) -> str:
         return f"{card_name} {masked_number}"
 
 
+def get_date(date_string: str) -> str:
+    """Функция принимает на вход строку с датой в формате '2024-03-11T02:26:18.671407' и возвращает строку с датой в формате 'ДД.ММ.ГГГГ'."""
+
+    # Разделяем дату и время
+    date_part = date_string.split("T")[0]
+
+    # Разделяем дату на год, месяц и день
+    year, month, day = date_part.split("-")
+
+    # Формируем строку с датой в нужном формате
+    formatted_date = f"{day}.{month}.{year}"
+
+    return formatted_date
