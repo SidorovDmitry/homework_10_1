@@ -47,3 +47,4 @@ def get_date(date_string: str) -> str:
         return formatted_date
     except (IndexError, ValueError):
         return "Некорректный формат даты"
+
