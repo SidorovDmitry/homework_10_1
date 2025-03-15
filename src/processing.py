@@ -4,7 +4,7 @@ def filter_by_state(transactions: list[dict], state: str = "EXECUTED") -> list[d
     return [transaction for transaction in transactions if transaction.get("state") == state]
 
 
-def sort_by_date():
+def sort_by_date(transactions: list[dict], reverse: bool = True) -> list[dict]:
     """Функция возвращать новый список, отсортированный по дате"""
 
-    pass
+    return sorted(transactions, key=lambda x: x["date"], reverse=reverse)
