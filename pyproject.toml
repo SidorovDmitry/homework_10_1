@@ -13,6 +13,7 @@ packages = [{include = "my_poetry_project_2", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
 
 
 [tool.poetry.group.lint.dependencies]
