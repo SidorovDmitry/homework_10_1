@@ -95,3 +95,73 @@ def incorrect_date_string_too_many_parts():
 @pytest.fixture
 def incorrect_date_string_invalid_month():
     return "2024-13-11T02:26:18.671407"
+
+
+# Фикстура для тестовых данных filter_by_state
+@pytest.fixture
+def filter_by_state_data():
+    return [
+        (
+            [  # Входные данные
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "PENDING", "date": "2024-01-02", "amount": 200},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 300},
+            ],
+            "EXECUTED",  # Параметр state
+            [  # Ожидаемый результат
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 300},
+            ],
+        ),
+        (
+            [  # Входные данные
+                {"state": "PENDING", "date": "2024-01-01", "amount": 100},
+                {"state": "CANCELED", "date": "2024-01-02", "amount": 200},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 300},
+            ],
+            "PENDING",  # Параметр state
+            [  # Ожидаемый результат
+                {"state": "PENDING", "date": "2024-01-01", "amount": 100},
+            ],
+        ),
+        (
+            [  # Входные данные
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "EXECUTED", "date": "2024-01-02", "amount": 200},
+            ],
+            "CANCELED",  # Параметр state
+            [],  # Ожидаемый результат (пустой список)
+        ),
+    ]
+
+# Фикстура для тестовых данных sort_by_date
+@pytest.fixture
+def sort_by_date_data():
+    return [
+        (
+            [  # Входные данные
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 200},
+                {"state": "EXECUTED", "date": "2024-01-02", "amount": 300},
+            ],
+            True,  # Параметр reverse (по умолчанию)
+            [  # Ожидаемый результат (по убыванию)
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 200},
+                {"state": "EXECUTED", "date": "2024-01-02", "amount": 300},
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+            ],
+        ),
+        (
+            [  # Входные данные
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 200},
+                {"state": "EXECUTED", "date": "2024-01-02", "amount": 300},
+            ],
+            False,  # Параметр reverse (по возрастанию)
+            [  # Ожидаемый результат (по возрастанию)
+                {"state": "EXECUTED", "date": "2024-01-01", "amount": 100},
+                {"state": "EXECUTED", "date": "2024-01-02", "amount": 300},
+                {"state": "EXECUTED", "date": "2024-01-03", "amount": 200},
+            ],
+        ),
+    ]
