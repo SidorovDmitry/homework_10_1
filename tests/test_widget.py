@@ -2,6 +2,33 @@ import pytest
 from src.widget import mask_account_card, get_date
 
 
+# Тестирование функции mask_account_card с помощью фикстур.
+def test_mask_account_card_valid_account(valid_account_number):
+    result = mask_account_card(valid_account_number)
+    assert result == "Счет **7890"
+
+def test_mask_account_card_valid_card(valid_card_number):
+    result = mask_account_card(valid_card_number)
+    assert result == "Visa Platinum 1234 56** **** 3456"
+
+def test_mask_account_card_invalid_account(invalid_account_number):
+    with pytest.raises(ValueError):
+        mask_account_card(invalid_account_number)
+
+def test_mask_account_card_invalid_card(invalid_card_number):
+    with pytest.raises(ValueError):
+        mask_account_card(invalid_card_number)
+
+def test_mask_account_card_empty_string(empty_string):
+    with pytest.raises(ValueError):
+        mask_account_card(empty_string)
+
+def test_mask_account_card_no_number(no_number_string):
+    with pytest.raises(ValueError):
+        mask_account_card(no_number_string)
+
+
+# Тестирование функции mask_account_card с помощью параметризации.
 @pytest.mark.parametrize(
     "input_data, expected_output",
     [
@@ -26,6 +53,7 @@ def test_mask_account_card(input_data: str, expected_output: str):
             mask_account_card(input_data)
 
 
+ # Тестирование функции get_date с помощью фикстур.
 def test_correct_format(correct_date_string: str):
     assert get_date(correct_date_string) == "11.03.2024"
 
