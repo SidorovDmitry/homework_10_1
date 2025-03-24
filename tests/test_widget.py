@@ -7,21 +7,26 @@ def test_mask_account_card_valid_account(valid_account_number):
     result = mask_account_card(valid_account_number)
     assert result == "Счет **7890"
 
+
 def test_mask_account_card_valid_card(valid_card_number):
     result = mask_account_card(valid_card_number)
     assert result == "Visa Platinum 1234 56** **** 3456"
+
 
 def test_mask_account_card_invalid_account(invalid_account_number):
     with pytest.raises(ValueError):
         mask_account_card(invalid_account_number)
 
+
 def test_mask_account_card_invalid_card(invalid_card_number):
     with pytest.raises(ValueError):
         mask_account_card(invalid_card_number)
 
+
 def test_mask_account_card_empty_string(empty_string):
     with pytest.raises(ValueError):
         mask_account_card(empty_string)
+
 
 def test_mask_account_card_no_number(no_number_string):
     with pytest.raises(ValueError):
@@ -53,7 +58,7 @@ def test_mask_account_card(input_data: str, expected_output: str):
             mask_account_card(input_data)
 
 
- # Тестирование функции get_date с помощью фикстур.
+# Тестирование функции get_date с помощью фикстур.
 def test_correct_format(correct_date_string: str):
     assert get_date(correct_date_string) == "11.03.2024"
 
@@ -93,7 +98,6 @@ def test_incorrect_format_invalid_month(incorrect_date_string_invalid_month: str
         # Корректные данные
         ("2024-03-11T02:26:18.671407", "11.03.2024"),  # Корректная дата
         ("2023-12-31T23:59:59.999999", "31.12.2023"),  # Корректная дата (граничные значения)
-
         # Некорректные данные
         ("11-03-2024", "Некорректный формат даты"),  # Отсутствует время
         ("11.03.2024 02:26:18", "Некорректный формат даты"),  # Неправильный разделитель
@@ -102,7 +106,6 @@ def test_incorrect_format_invalid_month(incorrect_date_string_invalid_month: str
         ("2024-03-11X02:26:18.671407", "Некорректный формат даты"),  # Неправильный разделитель между датой и временем
         ("2024-03-11T02:26:18.671407XYZ", "Некорректный формат даты"),  # Слишком много частей
         ("2024-13-11T02:26:18.671407", "Некорректный формат даты"),  # Неверный месяц
-
     ],
 )
 def test_get_date(date_string, expected_output):
