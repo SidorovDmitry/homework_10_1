@@ -6,6 +6,18 @@ def test_filter_by_currency(sample_transactions):
     assert len(usd_transactions) == 3
     assert all(t["operationAmount"]["currency"]["code"] == "USD" for t in usd_transactions)
 
+def test_filter_by_currency_with_exceptions():
+    transactions = [
+        {"operationAmount": {"currency": {"code": "USD"}}},
+        {"operationAmount": {"currency": {}}},  # Отсутствие ключа 'code'
+        {"operationAmount": {}},  # Отсутствие вложенного словаря 'currency'
+        {}  # Пустой словарь
+    ]
+    currency = "USD"
+    filtered_transactions = list(filter_by_currency(transactions, currency))
+    assert len(filtered_transactions) == 1, "Ожидается одна транзакция с правильной валютой"
+    assert filtered_transactions[0]["operationAmount"]["currency"]["code"] == currency, "Валюта транзакции не соответствует заданной"
+
 
 def test_transaction_descriptions(sample_transactions):
     descriptions = list(transaction_descriptions(sample_transactions))
