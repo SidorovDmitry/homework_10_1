@@ -1,5 +1,4 @@
-
-from typing import Generator, Dict, List
+from typing import Dict, Generator, List
 
 
 def filter_by_currency(transactions: List[Dict], currency: str) -> Generator[Dict, None, None]:
@@ -24,5 +23,3 @@ def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
     """Генерирует номера карт в заданном диапазоне"""
     for num in range(start, end + 1):
         yield f"{num:016d}"
-
-

@@ -1,4 +1,4 @@
-from src.generators import filter_by_currency, transaction_descriptions,card_number_generator
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
 
 def test_filter_by_currency(sample_transactions):
@@ -6,17 +6,20 @@ def test_filter_by_currency(sample_transactions):
     assert len(usd_transactions) == 3
     assert all(t["operationAmount"]["currency"]["code"] == "USD" for t in usd_transactions)
 
+
 def test_filter_by_currency_with_exceptions():
     transactions = [
         {"operationAmount": {"currency": {"code": "USD"}}},
         {"operationAmount": {"currency": {}}},  # Отсутствие ключа 'code'
         {"operationAmount": {}},  # Отсутствие вложенного словаря 'currency'
-        {}  # Пустой словарь
+        {},  # Пустой словарь
     ]
     currency = "USD"
     filtered_transactions = list(filter_by_currency(transactions, currency))
     assert len(filtered_transactions) == 1, "Ожидается одна транзакция с правильной валютой"
-    assert filtered_transactions[0]["operationAmount"]["currency"]["code"] == currency, "Валюта транзакции не соответствует заданной"
+    assert (
+        filtered_transactions[0]["operationAmount"]["currency"]["code"] == currency
+    ), "Валюта транзакции не соответствует заданной"
 
 
 def test_transaction_descriptions(sample_transactions):
@@ -32,5 +35,5 @@ def test_card_number_generator():
         "0000000000000002",
         "0000000000000003",
         "0000000000000004",
-        "0000000000000005"
+        "0000000000000005",
     ]

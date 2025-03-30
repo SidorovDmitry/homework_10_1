@@ -181,8 +181,6 @@ def sort_by_date_data():
     ]
 
 
-
-
 # Фикстура с тестовыми данными для функций filter_by_currency и transaction_descriptions
 @pytest.fixture
 def sample_transactions():
