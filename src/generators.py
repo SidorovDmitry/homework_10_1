@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Generator
 
 
 def filter_by_currency(transactions: list[dict], currency: str) -> Iterable:
@@ -36,7 +36,7 @@ for _ in range(5):
         break
 
 
-def card_number_generator(start: int, stop: int) -> Generator[str, None, None]:
+def card_number_generator(start: int, stop: int) -> Generator:
     """Функция для генератора номеров банковских карт, который принимает на вход начальное и конечное значение
     карт в формате XXXX XXXX XXXX XXXX, где X— цифра номера карты и возвращает номера корт"""
     if start > stop:
