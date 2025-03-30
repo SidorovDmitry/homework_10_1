@@ -63,6 +63,16 @@ transactions = [
 sorted_transactions = sort_by_date(transactions)
 print(sorted_transactions)
 ```
+*Генерирует номера карт в заданном диапазоне*
+```
+def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
+    
+    for num in range(start, end + 1):
+        yield f"{num:016d}"
+        
+for card_number in card_number_generator(123456789012345, 123456789012349):
+    print(card_number)
+```
 ## Структура проекта
 
 ```
