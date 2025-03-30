@@ -34,3 +34,19 @@ for _ in range(5):
     except StopIteration:
         print("Больше нет данных")
         break
+
+
+def card_number_generator(start: int, stop: int) -> Generator[str, None, None]:
+    """Функция для генератора номеров банковских карт, который принимает на вход начальное и конечное значение
+    карт в формате XXXX XXXX XXXX XXXX, где X— цифра номера карты и возвращает номера корт"""
+    if start > stop:
+        raise ValueError("Стартовое значение не может быть больше конечного")
+
+    for i in range(start, stop + 1):
+        new_number_card = str(i).zfill(16)
+        formatted_card = f"{new_number_card[:4]} {new_number_card[4:8]} {new_number_card[8:12]} {new_number_card[12:]}"
+        yield formatted_card
+
+
+for card in card_number_generator(1, 5):
+    print(card)
