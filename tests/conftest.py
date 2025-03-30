@@ -1,4 +1,5 @@
 import pytest
+from src.generators import card_number_generator
 
 
 # Фикстура, возвращающая список тестовых данных для get_mask_card_number
@@ -246,3 +247,11 @@ def sample_transactions():
             "to": "Счет 14211924144426031657",
         },
     ]
+
+
+# Фикстура с тестовыми данными для функции card_number_generator
+@pytest.fixture
+def card_numbers():
+    start = 1234567890123456
+    end = 1234567890123460
+    return list(card_number_generator(start, end))
