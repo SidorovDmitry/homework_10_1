@@ -33,7 +33,8 @@ poetry shell
 * masks.py: Содержит функции для маскировки номеров карт и счетов.
 * processing.py: Содержит функции для фильтрации и сортировки транзакций.
 * widget.py: Основной модуль для взаимодействия с пользователем.
-
+* generator.py: Модуль
+который содержит функции для работы с массивами транзакций.
 Пример использования:
 
 *Фильтрация транзакций по state*
@@ -62,29 +63,45 @@ transactions = [
 sorted_transactions = sort_by_date(transactions)
 print(sorted_transactions)
 ```
+*Генерирует номера карт в заданном диапазоне*
+```
+def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
+    
+    for num in range(start, end + 1):
+        yield f"{num:016d}"
+        
+for card_number in card_number_generator(123456789012345, 123456789012349):
+    print(card_number)
+```
 ## Структура проекта
 
 ```
-my_poetry_project_1/                     # Корневая директория проекта
-├── htmlcov/                             # Отчеты о покрытии кода тестами (генерируется coverage)
-├── src/                                 # Основная директория с исходным кодом
-│   ├── __init__.py                      # Делает директорию `src` пакетом Python
-│   ├── masks.py                         # Модуль для работы с масками данных
-│   ├── processing.py                    # Модуль для обработки данных
-│   └── widget.py                        # Модуль с виджетами (например, для GUI)
-├── tests/                               # Директория с тестами
-│   ├── __init__.py                      # Делает директорию `tests` пакетом Python
-│   ├── conftest.py                      # Настройки pytest (например, фикстуры)
-│   ├── test_masks.py                    # Тесты для модуля masks.py
-│   ├── test_processing.py               # Тесты для модуля processing.py
-│   └── test_widget.py                   # Тесты для модуля widget.py
-├── .coverage                            # Данные о покрытии кода тестами (генерируется coverage)
-├── .flake8                              # Конфигурация для линтера flake8
-├── .gitignore                           # Файл для игнорирования ненужных файлов в Git
-├── main.py                              # Основной исполняемый файл проекта
-├── poetry.lock                          # Файл с точными версиями зависимостей (генерируется Poetry)
-├── pyproject.toml                       # Конфигурация Poetry (зависимости, настройки проекта)
-└── README.md                            # Файл с описанием проекта
+my_poetry_project_1/         # Корневая директория проекта
+│
+├── src/                     # Основной исходный код
+│   ├── __init__.py          # Пакетный файл
+│   ├── generators.py        # Генераторы транзакций
+│   ├── masks.py             # Маскирование данных
+│   ├── processing.py        # Обработка данных
+│   └── widget.py            # Виджеты (если есть UI)
+│
+├── tests/                   # Тесты
+│   ├── __init__.py
+│   ├── conftest.py          # Фикстуры pytest
+│   ├── test_generators.py   # Тесты для generators.py
+│   ├── test_masks.py        # Тесты для masks.py
+│   ├── test_processing.py   # Тесты для processing.py
+│   └── test_widget.py       # Тесты для widget.py
+│
+├── htmlcov/                 # Отчеты покрытия тестами (генерируется)
+│
+├── .coverage                # Данные о покрытии кода тестами
+├── .flake8                  # Конфигурация линтера
+├── .gitignore               # Игнорируемые файлы для Git
+├── main.py                  # Основной скрипт (точка входа)
+├── poetry.lock              # Фиксация версий зависимостей
+├── pyproject.toml           # Конфигурация Poetry
+└── README.md                # Документация проекта                      
 ```
 ## Зависимости
 Зависимости проекта управляются через Poetry. Они перечислены в файле `pyproject.toml`
