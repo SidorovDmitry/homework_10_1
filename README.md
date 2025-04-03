@@ -73,35 +73,38 @@ def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
 for card_number in card_number_generator(123456789012345, 123456789012349):
     print(card_number)
 ```
+*Декоратор для логирования работы функций
+```
+
+```
+
 ## Структура проекта
 
 ```
 my_poetry_project_1/         # Корневая директория проекта
-│
-├── src/                     # Основной исходный код
-│   ├── __init__.py          # Пакетный файл
-│   ├── generators.py        # Генераторы транзакций
-│   ├── masks.py             # Маскирование данных
-│   ├── processing.py        # Обработка данных
-│   └── widget.py            # Виджеты (если есть UI)
-│
-├── tests/                   # Тесты
-│   ├── __init__.py
-│   ├── conftest.py          # Фикстуры pytest
-│   ├── test_generators.py   # Тесты для generators.py
-│   ├── test_masks.py        # Тесты для masks.py
-│   ├── test_processing.py   # Тесты для processing.py
-│   └── test_widget.py       # Тесты для widget.py
-│
-├── htmlcov/                 # Отчеты покрытия тестами (генерируется)
-│
-├── .coverage                # Данные о покрытии кода тестами
-├── .flake8                  # Конфигурация линтера
-├── .gitignore               # Игнорируемые файлы для Git
-├── main.py                  # Основной скрипт (точка входа)
-├── poetry.lock              # Фиксация версий зависимостей
-├── pyproject.toml           # Конфигурация Poetry
-└── README.md                # Документация проекта                      
+├── htmlcov/               # Папка с HTML-отчетами покрытия тестов
+├── src/                   # Исходный код
+│   ├── __init__.py        # Инициализация пакета src
+│   ├── decorators.py      # Модуль с декораторами (включая log)
+│   ├── generators.py      # Модуль с генерацией данных
+│   ├── masks.py           # Модуль для обработки масок
+│   ├── processing.py      # Основной процессинг данных
+│   ├── widget.py          # Работа с UI/виджетами
+├── tests/                 # Тесты
+│   ├── __init__.py        # Инициализация пакета tests
+│   ├── conftest.py        # Конфигурация Pytest
+│   ├── test_decorators.py # Тесты для модуля decorators
+│   ├── test_generators.py # Тесты для генераторов
+│   ├── test_masks.py      # Тесты для обработки масок
+│   ├── test_processing.py # Тесты для обработки данных
+│   ├── test_widget.py     # Тесты для UI
+├── .coverage              # Файл с данными покрытия тестов
+├── .flake8                # Настройки линтинга Flake8
+├── .gitignore             # Файлы и папки, игнорируемые Git
+├── main.py                # Главный файл проекта
+├── poetry.lock            # Лок-файл Poetry
+├── pyproject.toml         # Конфигурация Poetry и зависимостей
+└── README.md              # Документация проекта                   
 ```
 ## Зависимости
 Зависимости проекта управляются через Poetry. Они перечислены в файле `pyproject.toml`

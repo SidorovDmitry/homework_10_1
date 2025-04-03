@@ -3,6 +3,8 @@ from time import ctime
 
 
 def write_log(message, filename=None):
+    """Записывает сообщение в файл или выводит его на консоль"""
+
     if filename:
         with open(filename, "a", encoding="utf-8") as f:
             f.write(message + "\n")
@@ -11,6 +13,8 @@ def write_log(message, filename=None):
 
 
 def log(filename=None):
+    """Декоратор для логирования вызовов функций и возникающих в них ошибок"""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
