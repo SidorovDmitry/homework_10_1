@@ -1,6 +1,6 @@
-import pytest
-from time import ctime
 from functools import wraps
+from time import ctime
+
 
 def write_log(message, filename=None):
     if filename:
@@ -8,6 +8,7 @@ def write_log(message, filename=None):
             f.write(message + "\n")
     else:
         print(message)
+
 
 def log(filename=None):
     def decorator(func):
@@ -21,7 +22,7 @@ def log(filename=None):
             except Exception as e:
                 write_log(f"Ошибка в {func.__name__}: {str(e)}", filename)
                 raise
+
         return wrapper
+
     return decorator
-
-
