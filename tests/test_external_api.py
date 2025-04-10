@@ -33,7 +33,7 @@ def test_convert_amount_failure():
         result = convert_amount(transactions_finance)
 
     # Проверяем, что функция возвращает None при ошибке
-    assert result is None, "Функция не вернула None при ошибке"
+    assert result == 0.0, "Функция не вернула None при ошибке"
 
 
 def test_convert_amount_exception():
@@ -44,7 +44,7 @@ def test_convert_amount_exception():
         result = convert_amount(transactions_finance)
 
     # Проверяем, что функция возвращает None при исключении
-    assert result is None, "Функция не вернула None при исключении"
+    assert result == 0.0, "Функция не вернула None при исключении"
 
 
 if __name__ == "__main__":

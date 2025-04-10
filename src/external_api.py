@@ -28,24 +28,24 @@ def convert_amount(transactions_finance, to_currency="RUB"):
             return response.json()["result"]
         else:
             print(f"Запрос не был успешным. Возможная причина: {response.reason}")
-            return None
+            return 0.0
     except requests.exceptions.RequestException :
         print("Произошла ошибка, видимо в коде некорректные данные")
-        return None
+        return 0.0
 
 
-# # Пример использования функции
-# transactions_finance = {
-#     "id": 441945886,
-#     "state": "EXECUTED",
-#     "date": "2019-08-26T10:50:58.294041",
-#     "operationAmount": {
-#         "amount": "243.65",
-#         "currency": {
-#             "code": "USD"
-#         }
-#     }
-# }
-#
-# converted_amount = convert_amount(transactions_finance)
-# print(converted_amount)
+# Пример использования функции
+transactions_finance = {
+    "id": 441945886,
+    "state": "EXECUTED",
+    "date": "2019-08-26T10:50:58.294041",
+    "operationAmount": {
+        "amount": "0",
+        "currency": {
+            "code": "USD"
+        }
+    }
+}
+
+converted_amount = convert_amount(transactions_finance)
+print(converted_amount)
