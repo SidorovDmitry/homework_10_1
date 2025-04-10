@@ -32,7 +32,7 @@ def test_convert_amount_failure():
     with patch("requests.get", return_value=mock_response):
         result = convert_amount(transactions_finance)
 
-    # Проверяем, что функция возвращает None при ошибке
+    # Проверяем, что функция возвращает 0.0 при ошибке
     assert result == 0.0, "Функция не вернула None при ошибке"
 
 
@@ -43,7 +43,7 @@ def test_convert_amount_exception():
     with patch("requests.get", side_effect=requests.exceptions.RequestException):
         result = convert_amount(transactions_finance)
 
-    # Проверяем, что функция возвращает None при исключении
+    # Проверяем, что функция возвращает 0.0 при исключении
     assert result == 0.0, "Функция не вернула None при исключении"
 
 
