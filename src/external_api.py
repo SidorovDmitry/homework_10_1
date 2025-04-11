@@ -25,7 +25,7 @@ def convert_amount(transactions_finance, to_currency="RUB"):
         status_code = response.status_code
 
         if status_code == 200:
-            return response.json()["result"]
+            return float(response.json()["result"])
         else:
             print(f"Запрос не был успешным. Возможная причина: {response.reason}")
             return 0.0
@@ -40,7 +40,7 @@ def convert_amount(transactions_finance, to_currency="RUB"):
 #     "state": "EXECUTED",
 #     "date": "2019-08-26T10:50:58.294041",
 #     "operationAmount": {
-#         "amount": "0",
+#         "amount": "4",
 #         "currency": {
 #             "code": "USD"
 #         }
