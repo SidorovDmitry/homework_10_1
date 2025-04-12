@@ -29,7 +29,7 @@ def convert_amount(transactions_finance, to_currency="RUB"):
         else:
             print(f"Запрос не был успешным. Возможная причина: {response.reason}")
             return 0.0
-    except requests.exceptions.RequestException :
+    except requests.exceptions.RequestException:
         print("Произошла ошибка, видимо в коде некорректные данные")
         return 0.0
 
