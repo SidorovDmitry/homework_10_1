@@ -33,11 +33,11 @@ poetry shell
 * masks.py: Содержит функции для маскировки номеров карт и счетов.
 * processing.py: Содержит функции для фильтрации и сортировки транзакций.
 * widget.py: Основной модуль для взаимодействия с пользователем.
-* generator.py: Модуль
-который содержит функции для работы с массивами транзакций.
-* utils.py: Модуль чтения для JSON файла из директории data в корне проекта
+* generator.py: Модуль, который содержит функции для работы с массивами транзакций.
+* utils.py: Модуль чтения для JSON файла
 * external_api.py: Содержит функцию для конвертации валют с помощью внешнего API 
 * decorators.py: Декоратор логирования выполнения функций с выводом в файл или консоль
+* read_csv_excel.py: Модуль содержащий функции для чтения CSV и Excel файлов
 
 Пример использования:
 
@@ -91,6 +91,7 @@ my_poetry__project_1/
 │   ├── external_apl.py        # Внешние API-интеграции
 │   ├── generators.py          # Генераторы
 │   ├── masks.py               # Маски данных
+│   ├── read_csv_excel.py      # Чтение CSV и Excel
 │   ├── processing.py          # Обработка данных
 │   ├── utils.py               # Вспомогательные утилиты
 │   └── widget.py              # Виджеты
@@ -101,6 +102,7 @@ my_poetry__project_1/
 │   ├── test_external_apl.py
 │   ├── test_generators.py
 │   ├── test_masks.py
+│   ├── test_read_csv_excel.py
 │   ├── test_processing.py
 │   ├── test_titls.py
 │   └── test_widget.py
