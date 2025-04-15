@@ -1,6 +1,8 @@
-from unittest.mock import patch, mock_open
-from src.read_csv_excel import read_csv_file, read_excel_file
+from unittest.mock import mock_open, patch
+
 import pandas as pd
+
+from src.read_csv_excel import read_csv_file, read_excel_file
 
 
 # Тестирование функции чтения CSV файла.
@@ -20,6 +22,7 @@ def test_read_csv_file_success():
     assert result[1]["amount"] == "200"
     assert result[1]["currency"] == "EUR"
 
+
 def test_read_csv_file_file_not_found():
     file_path = "non/existent/file.csv"
     delimiter = ";"
@@ -29,6 +32,7 @@ def test_read_csv_file_file_not_found():
 
     assert result == []
 
+
 def test_read_csv_file_exception():
     file_path = "path/to/csv/file.csv"
     delimiter = ";"
@@ -37,6 +41,7 @@ def test_read_csv_file_exception():
         result = read_csv_file(file_path, delimiter)
 
     assert result == []
+
 
 if __name__ == "__main__":
     test_read_csv_file_success()
@@ -48,10 +53,7 @@ if __name__ == "__main__":
 def test_read_excel_file_success():
     file_path = "path/to/excel/file.xlsx"
 
-    expected_data = [
-        {"id": 1, "amount": 100, "currency": "USD"},
-        {"id": 2, "amount": 200, "currency": "EUR"}
-    ]
+    expected_data = [{"id": 1, "amount": 100, "currency": "USD"}, {"id": 2, "amount": 200, "currency": "EUR"}]
 
     with patch("pandas.read_excel") as mock_read_excel:
         mock_read_excel.return_value = pd.DataFrame(expected_data)
@@ -65,6 +67,7 @@ def test_read_excel_file_success():
     assert result[1]["amount"] == 200
     assert result[1]["currency"] == "EUR"
 
+
 def test_read_excel_file_file_not_found():
     file_path = "non/existent/file.xlsx"
 
@@ -73,6 +76,7 @@ def test_read_excel_file_file_not_found():
 
     assert result == []
 
+
 def test_read_excel_file_exception():
     file_path = "path/to/excel/file.xlsx"
 
@@ -80,6 +84,7 @@ def test_read_excel_file_exception():
         result = read_excel_file(file_path)
 
     assert result == []
+
 
 if __name__ == "__main__":
     test_read_excel_file_success()
