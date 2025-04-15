@@ -27,5 +27,24 @@ def read_csv_file(file_path, delimiter):
         return []
 
 
-
 # print(read_csv_file(file_path_csv,";")) # Для проверки работы функции
+
+
+def read_excel_file(file_path) :
+    """Функция для считывания финансовых операций из XLSX-файла и возврата списка словарей."""
+    try:
+
+        df = pd.read_excel(file_path) # Читаем Excel файл
+        transaction_list = df.to_dict(orient="records")  # Преобразуем DataFrame в список словарей
+        return transaction_list
+
+
+    except FileNotFoundError:
+        print(f"Файл не найден по пути: {file_path}")
+        return []
+    except Exception as e:
+        print(f"Произошла непредвиденная ошибка: {e}")
+        return []
+
+
+# print(read_excel_file(file_path_excel)) # Для проверки работы функции
