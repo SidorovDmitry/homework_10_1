@@ -1,6 +1,4 @@
-import pytest
-from src.sorting_by_value import filter_transactions,count_operations_by_category
-from typing import List, Dict
+from src.sorting_by_value import count_operations_by_category, filter_transactions
 
 
 def test_no_match(transactions):
