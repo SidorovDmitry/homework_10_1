@@ -1,45 +1,46 @@
 import pytest
-from src.sorting_by_value import filter_transactions
+from src.sorting_by_value import filter_transactions,count_operations_by_category
 from typing import List, Dict
 
 
-@pytest.fixture
-def sample_transactions() -> List[Dict]:
-    return [
-        {"id": 1, "description": "Перевод организации", "other_field": "value1"},
-        {"id": 2, "description": "Открытие вклада", "other_field": "value2"},
-        {"id": 3, "description": "Перевод физическому лицу", "other_field": "value3"},
-        {"id": 4, "description": "Покупка товаров", "other_field": "value4"},
-        {"id": 5, "description": None, "other_field": "value5"},  # None description
-        {"id": 6, "other_field": "value6"},  # Отсутствует description
-        {"id": 7, "description": "", "other_field": "value7"},  # Пустая строка
-        {"id": 8, "description": "  ", "other_field": "value8"},  # Пробелы
-    ]
+def test_no_match(transactions):
+    """Тест, когда строка не найдена"""
+    result = filter_transactions(transactions, r"Несуществующий текст")
+    assert result == []
 
-def test_filter_exact_match(sample_transactions):
-    """Тест на точное совпадение"""
-    result = filter_transactions(sample_transactions, "Перевод организации")
-    assert len(result) == 1
-    assert result[0]["id"] == 1
 
-def test_filter_handles_none_description(sample_transactions):
-    """Тест обработки None в описании"""
-    result = filter_transactions(sample_transactions, "Перевод")
-    assert len(result) == 2
-    assert {t["id"] for t in result} == {1, 3}
+def test_empty_search_string(transactions):
+    """Тест, должен вернуть все транзакции"""
+    result = filter_transactions(transactions, "")
+    assert result == transactions
 
-def test_filter_handles_missing_description(sample_transactions):
-    """Тест обработки отсутствия поля description"""
-    result = filter_transactions(sample_transactions, "value")
-    assert len(result) == 0
 
-def test_filter_handles_empty_string(sample_transactions):
-    """Тест обработки пустой строки в описании"""
-    result = filter_transactions(sample_transactions, "Покупка")
-    assert len(result) == 1
-    assert result[0]["id"] == 4
+def test_normal_case(transactions, categories):
+    """Тест правильного подсчета операций по категориям"""
+    result = count_operations_by_category(transactions, categories)
+    assert result == {"Открытие вклада": 0, "Перевод организации": 1, "Перевод со счета на счет": 0}
 
-def test_filter_with_whitespace(sample_transactions):
-    """Тест обработки строки с пробелами"""
-    result = filter_transactions(sample_transactions, "  ")
-    assert len(result) == 1
+
+def test_empty_transactions(categories):
+    """Тест пустого списка словаря транзакций"""
+    result = count_operations_by_category([], categories)
+    assert result == {"Открытие вклада": 0, "Перевод организации": 0, "Перевод со счета на счет": 0}
+
+
+def test_empty_categories(transactions):
+    """Тест пустого списка словаря транзакций"""
+    result = count_operations_by_category(transactions, [])
+    assert result == {}
+
+
+def test_no_matching_categories(transactions):
+    """Тест несуществующей категории транзакций"""
+    result = count_operations_by_category(transactions, ["Несуществующая категория"])
+    assert result == {"Несуществующая категория": 0}
+
+
+def test_missing_description_field():
+    """Тест отсутствие поля description"""
+    transactions = [{"id": 1, "no_description": "test"}, {"id": 2, "description": "Перевод организации"}]
+    result = count_operations_by_category(transactions, ["Перевод организации"])
+    assert result == {"Перевод организации": 1}
