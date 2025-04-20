@@ -38,7 +38,7 @@ poetry shell
 * utils.py: Модуль чтения для JSON файла из директории data в корне проекта
 * external_api.py: Содержит функцию для конвертации валют с помощью внешнего API 
 * decorators.py: Декоратор логирования выполнения функций с выводом в файл или консоль
-
+* sorting_by_value.py: Модуль сортировки по параметрам
 Пример использования:
 
 *Фильтрация транзакций по state*
@@ -91,6 +91,7 @@ my_poetry__project_1/
 │   ├── external_apl.py        # Внешние API-интеграции
 │   ├── generators.py          # Генераторы
 │   ├── masks.py               # Маски данных
+│   ├── sorting_by_value.py    # Модуль сортировки по параметрам
 │   ├── processing.py          # Обработка данных
 │   ├── utils.py               # Вспомогательные утилиты
 │   └── widget.py              # Виджеты
@@ -99,6 +100,7 @@ my_poetry__project_1/
 │   ├── conftest.py            # Фикстуры pytest
 │   ├── test_decorators.py
 │   ├── test_external_apl.py
+│   ├── test_sorting_by_value.py 
 │   ├── test_generators.py
 │   ├── test_masks.py
 │   ├── test_processing.py
