@@ -256,3 +256,36 @@ def card_numbers():
     start = 1234567890123456
     end = 1234567890123460
     return list(card_number_generator(start, end))
+
+
+# Фикстура для тестов sorting_ by_value
+@pytest.fixture
+def transactions():
+    return [
+        {
+            "id": 441945886,
+            "state": "EXECUTED",
+            "date": "2019-08-26T10:50:58.294041",
+            "operationAmount": {"amount": "31957.58", "currency": {"name": "руб.", "code": "RUB"}},
+            "description": "Перевод организации",
+            "from": "Maestro 1596837868705199",
+            "to": "Счет 64686473678894779589",
+        },
+        {"description": "Payment for groceries", "amount": 50},
+    ]
+
+
+@pytest.fixture
+def transactions2():
+    return [
+        {"id": 441945886, "description": "Перевод организации"},
+        {"id": 41428829, "description": "Перевод организации"},
+        {"id": 939719570, "description": "Перевод организации"},
+        {"id": 587085106, "description": "Открытие вклада"},
+        {"id": 142264268, "description": "Перевод со счета на счет"},
+    ]
+
+
+@pytest.fixture
+def categories():
+    return ["Открытие вклада", "Перевод организации", "Перевод со счета на счет"]
