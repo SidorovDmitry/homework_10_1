@@ -1,6 +1,6 @@
 import re
 from typing import List, Dict
-
+from collections import Counter
 
 def filter_transactions(transactions: List[Dict], search_string: str) -> List[Dict]:
     """ Фильтрует транзакции по строке поиска в описании."""
@@ -16,3 +16,26 @@ def filter_transactions(transactions: List[Dict], search_string: str) -> List[Di
         return []
 
 
+
+
+def count_operations_by_category(transactions, categories):
+    """
+    Функция принимает список словарей с данными о банковских операциях и список категорий операций,
+    а возвращает словарь, в котором ключи — это названия категорий, значения — это количество в каждой категории.
+    Категории операций хранятся в поле description
+    """
+
+    # Собираем все описания (description) из операций, которые есть в заданном списке категорий
+    description_list = [
+        transaction.get('description')
+        for transaction in transactions
+            if transaction.get('description') in categories
+    ]
+
+    # Используем Counter для подсчета
+    description_counts = Counter(description_list)
+
+    # Преобразуем Counter в обычный словарь и добавляем категории с нулевым количеством
+    result = {category: description_counts.get(category, 0) for category in categories}
+
+    return result
