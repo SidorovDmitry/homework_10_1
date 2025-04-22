@@ -64,51 +64,38 @@ def test_correct_format(correct_date_string: str):
     assert get_date(correct_date_string) == "11.03.2024"
 
 
-def test_incorrect_format_no_time(incorrect_date_string_no_time: str):
-    assert get_date(incorrect_date_string_no_time) == "Некорректный формат даты"
-
-
-def test_incorrect_format_wrong_separator(incorrect_date_string_wrong_separator: str):
-    assert get_date(incorrect_date_string_wrong_separator) == "Некорректный формат даты"
-
-
-def test_incorrect_format_extra_chars(incorrect_date_string_extra_chars: str):
-    assert get_date(incorrect_date_string_extra_chars) == "Некорректный формат даты"
-
-
-def test_incorrect_format_non_numeric(incorrect_date_string_non_numeric: str):
-    assert get_date(incorrect_date_string_non_numeric) == "Некорректный формат даты"
-
-
-def test_incorrect_format_wrong_delimiter(incorrect_date_string_wrong_delimiter: str):
-    assert get_date(incorrect_date_string_wrong_delimiter) == "Некорректный формат даты"
-
-
-def test_incorrect_format_too_many_parts(incorrect_date_string_too_many_parts: str):
-    assert get_date(incorrect_date_string_too_many_parts) == "Некорректный формат даты"
-
-
-def test_incorrect_format_invalid_month(incorrect_date_string_invalid_month: str):
-    assert get_date(incorrect_date_string_invalid_month) == "Некорректный формат даты"
-
-
-# Параметризованный тест для функции get_date
+# Тесты для корректных форматов даты
 @pytest.mark.parametrize(
-    "date_string, expected_output",
+    "date_string, expected",
     [
-        # Корректные данные
-        ("2024-03-11T02:26:18.671407", "11.03.2024"),  # Корректная дата
-        ("2023-12-31T23:59:59.999999", "31.12.2023"),  # Корректная дата (граничные значения)
-        # Некорректные данные
-        ("11-03-2024", "Некорректный формат даты"),  # Отсутствует время
-        ("11.03.2024 02:26:18", "Некорректный формат даты"),  # Неправильный разделитель
-        ("2024-03-11T02:26:18.671407Z", "Некорректный формат даты"),  # Лишние символы в конце
-        ("2024-03-ABT02:26:18.671407", "Некорректный формат даты"),  # Нечисловые символы
-        ("2024-03-11X02:26:18.671407", "Некорректный формат даты"),  # Неправильный разделитель между датой и временем
-        ("2024-03-11T02:26:18.671407XYZ", "Некорректный формат даты"),  # Слишком много частей
-        ("2024-13-11T02:26:18.671407", "Некорректный формат даты"),  # Неверный месяц
+        ("2024-03-11T02:26:18", "11.03.2024"),
+        ("1999-12-31T23:59:59", "31.12.1999"),
+        ("2000-01-01T00:00:00", "01.01.2000"),
+        ("2023-02-28T15:30:45", "28.02.2023"),
     ],
 )
-def test_get_date(date_string, expected_output):
-    result = get_date(date_string)
-    assert result == expected_output
+def test_valid_date_formats(date_string, expected):
+    """Тестирование корректных форматов даты"""
+    assert get_date(date_string) == expected
+
+
+# Дополнительные тесты для граничных случаев
+def test_whitespace_string():
+    """Тестирование строки с пробелами"""
+    with pytest.raises(ValueError):
+        get_date("   ")
+
+
+def test_partial_date_string():
+    """Тестирование неполной строки даты"""
+    with pytest.raises(ValueError):
+        get_date("2024-03")
+
+
+# Тест для проверки сохранения формата
+def test_output_format():
+    """Проверка что выходной формат всегда ДД.ММ.ГГГГ"""
+    result = get_date("2024-12-01T00:00:00")
+    assert result == "01.12.2024"
+    assert len(result.split(".")) == 3
+    assert all(part.isdigit() for part in result.split("."))

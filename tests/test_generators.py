@@ -4,51 +4,49 @@ from src.generators import card_number_generator, filter_by_currency, transactio
 
 
 @pytest.mark.parametrize(
-    "transactions, currency, expected",
+    "transaction,currency,should_match",
     [
-        # Обычный случай: 1 транзакция в USD
-        (
-            [{"operationAmount": {"currency": {"code": "USD"}}}],
-            "USD",
-            [{"operationAmount": {"currency": {"code": "USD"}}}],
-        ),
-        # Нет совпадений
-        (
-            [{"operationAmount": {"currency": {"code": "EUR"}}}],
-            "USD",
-            [],
-        ),
-        # Пропуск транзакции с ошибкой в структуре
-        (
-            [{"invalid": "data"}, {"operationAmount": {"currency": {"code": "USD"}}}],
-            "USD",
-            [{"operationAmount": {"currency": {"code": "USD"}}}],
-        ),
+        ({"operationAmount": {"currency": {"code": "USD"}}}, "USD", True),
+        ({"currency_code": "EUR"}, "EUR", True),
+        ({"description": "No currency"}, "USD", False),
+        ({"operationAmount": {"currency": {"code": "rub"}}}, "RUB", True),
+        ({}, "USD", False),
+        (None, "USD", False),
+        ({"operationAmount": {"currency": {}}}, "USD", False),
+        ({"operationAmount": None}, "USD", False),
+        ("invalid_transaction", "USD", False),
+        (12345, "USD", False),
+        ({"operationAmount": {"currency": {"code": "USD"}}}, "usd", True),
+        ({"currency_code": "eur"}, "EUR", True),
     ],
 )
-def test_filter_by_currency(transactions, currency, expected):
-    assert list(filter_by_currency(transactions, currency)) == expected
+def test_filter_by_currency_edge_cases(transaction, currency, should_match):
+    """Тестирование граничных случаев"""
+    result = list(filter_by_currency([transaction], currency))
+    assert (len(result) == 1) == should_match
 
 
-def test_filter_by_currency(sample_transactions):
-    usd_transactions = list(filter_by_currency(sample_transactions, "USD"))
-    assert len(usd_transactions) == 3
-    assert all(t["operationAmount"]["currency"]["code"] == "USD" for t in usd_transactions)
+def test_filter_with_none_transactions():
+    """Тестирование с None вместо списка транзакций"""
+    assert len(list(filter_by_currency(None, "USD"))) == 0
 
 
-def test_filter_by_currency_with_exceptions():
-    transactions = [
-        {"operationAmount": {"currency": {"code": "USD"}}},
-        {"operationAmount": {"currency": {}}},  # Отсутствие ключа 'code'
-        {"operationAmount": {}},  # Отсутствие вложенного словаря 'currency'
-        {},  # Пустой словарь
-    ]
-    currency = "USD"
-    filtered_transactions = list(filter_by_currency(transactions, currency))
-    assert len(filtered_transactions) == 1, "Ожидается одна транзакция с правильной валютой"
-    assert (
-        filtered_transactions[0]["operationAmount"]["currency"]["code"] == currency
-    ), "Валюта транзакции не соответствует заданной"
+def test_filter_with_empty_list():
+    """Тестирование с пустым списком транзакций"""
+    assert len(list(filter_by_currency([], "USD"))) == 0
+
+
+def test_filter_with_invalid_transactions():
+    """Тестирование с некорректными типами транзакций"""
+    transactions = [None, "invalid", 123, {}]
+    assert len(list(filter_by_currency(transactions, "USD"))) == 0
+
+
+def test_filter_with_mixed_transactions(sample_transactions):
+    """Тестирование со смешанным набором транзакций"""
+    result = list(filter_by_currency(sample_transactions, "USD"))
+    assert len(result) == 3
+    assert result[0]["operationAmount"]["currency"]["code"] == "USD"
 
 
 # Тесты для функции transaction_descriptions

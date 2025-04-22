@@ -35,28 +35,27 @@ def mask_account_card(card_account_number: str) -> str:
 
 
 def get_date(date_string: str) -> str:
-    """
-    Функция принимает на вход строку с датой в формате '2024-03-11T02:26:18.671407'
-    и возвращает строку с датой в формате ДД.ММ.ГГГГ"""
-    try:
-        if "T" not in date_string:
-            return "Некорректный формат даты"
+    """функция преобразует дату в формат 'ДД.ММ.ГГГГ'"""
 
-        date_part, time_part = date_string.split("T")
-        year, month, day = date_part.split("-")
+    # Проверка на пустую строку
+    if not date_string:
+        raise ValueError("Дата не может быть пустой строкой.")
 
-        if not (year.isdigit() and month.isdigit() and day.isdigit()):
-            return "Некорректный формат даты"
+    # Проверка на корректный формат даты
+    if "T" not in date_string:
+        raise ValueError("Некорректный формат даты. Ожидается 'ГГГГ-ММ-ДДTЧЧ:ММ:СС'.")
 
-        # Проверяем, что после времени нет лишних символов
-        if len(time_part.split(".")) > 2 or time_part.endswith("Z"):
-            return "Некорректный формат даты"
+    # Разделение строки на 2 части по "Т", а также по "-" части строки с индексом 0
+    split_date_string = date_string.split("T")[0].split("-")
 
-        # Проверяем корректность значений месяца и дня
-        if not (1 <= int(month) <= 12 and 1 <= int(day) <= 31):
-            return "Некорректный формат даты"
+    # Проверка на корректное количество частей
+    if len(split_date_string) != 3:
+        raise ValueError("Некорректный формат даты. Ожидается 'ГГГГ-ММ-ДД'.")
 
-        formatted_date = f"{day}.{month}.{year}"
-        return formatted_date
-    except (IndexError, ValueError):
-        return "Некорректный формат даты"
+    # Извлечение год, месяц, день
+    year, month, day = split_date_string
+
+    # Форматирование даты в нужный формат
+    formatted_date = f"{day}.{month}.{year}"
+
+    return formatted_date

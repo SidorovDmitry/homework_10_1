@@ -2,12 +2,34 @@ from typing import Dict, Generator, List
 
 
 def filter_by_currency(transactions: List[Dict], currency: str) -> Generator[Dict, None, None]:
-    """Фильтрует транзакции по заданной валюте"""
+    """Фильтрует транзакции по заданной валюте с обработкой ошибок"""
+    if not isinstance(transactions, list):
+        return
+
+    currency = str(currency).upper() if currency else ""
+
     for transaction in transactions:
+        if not isinstance(transaction, dict):
+            continue
+
         try:
-            if transaction["operationAmount"]["currency"]["code"] == currency:
+            # Проверяем стандартный формат с operationAmount
+            if "operationAmount" in transaction:
+                op_amount = transaction["operationAmount"]
+                if isinstance(op_amount, dict):
+                    curr = op_amount.get("currency", {})
+                    if isinstance(curr, dict):
+                        code = str(curr.get("code", "")).upper()
+                        if code == currency:
+                            yield transaction
+                            continue
+
+            # Проверяем альтернативный формат с currency_code
+            code = str(transaction.get("currency_code", "")).upper()
+            if code == currency:
                 yield transaction
-        except (KeyError, TypeError):
+
+        except (AttributeError, TypeError):
             continue
 
 

@@ -4,41 +4,60 @@ from src.processing import filter_by_state, sort_by_date
 from src.sorting_by_value import count_operations_by_category, filter_transactions
 from src.utils import read_file
 from src.widget import get_date, mask_account_card
+from src.generators import filter_by_currency
 
 
-def format_transaction(transaction):
-    """Форматирует транзакцию для вывода в заданном формате"""
+
+def format_transaction(transaction: dict) -> str:
+    """Форматирует транзакцию для вывода с валютой"""
     try:
         # Основные данные
         date = get_date(transaction.get("date", ""))
         description = transaction.get("description", "Описание отсутствует")
 
         # Обработка карт/счетов
-        from_account = mask_account_card(str(transaction["from"])) if "from" in transaction else ""
+        from_account = mask_account_card(str(transaction["from"])) if "from" in transaction and str(
+            transaction["from"]) != "nan" else ""
         to_account = mask_account_card(str(transaction.get("to", "Получатель не указан")))
 
-        # Улучшенная обработка суммы
-        amount_display = "не указана"
+        # Получаем сумму и валюту
+        amount = "не указана"
         currency = ""
 
         # Проверяем разные варианты структуры суммы
-        if "amount" in transaction:  # Прямое поле amount
+        if "amount" in transaction and transaction["amount"] is not None:
             amount = transaction["amount"]
-            currency = transaction.get("currency", "")
-        else:  # Стандартная структура с operationAmount
-            operation_amount = transaction.get("operationAmount", {})
-            if isinstance(operation_amount, dict):
-                amount = operation_amount.get("amount")
-                currency_data = operation_amount.get("currency", {})
-                currency = currency_data.get("code", "") if isinstance(currency_data, dict) else str(currency_data)
+            # Пробуем получить валюту из разных возможных полей
+            currency = transaction.get("currency",
+                                       transaction.get("currency_code",
+                                                       transaction.get("currency_name", "")))
+        elif "operationAmount" in transaction:
+            op_amount = transaction["operationAmount"]
+            if isinstance(op_amount, dict):
+                amount = op_amount.get("amount", "не указана")
+                curr_info = op_amount.get("currency", {})
+                if isinstance(curr_info, dict):
+                    currency = curr_info.get("code", "")
+                else:
+                    currency = str(curr_info)
 
         # Форматируем сумму
-        if "amount" in locals() and amount not in [None, ""]:
-            try:
-                amount_num = float(amount)
-                amount_display = f"{amount_num:,.2f}".replace(",", " ").replace(".00", "")
-            except (ValueError, TypeError):
+        try:
+            if isinstance(amount, (int, float)):
+                amount_display = f"{amount:,.2f}".replace(",", " ").replace(".00", "")
+            else:
                 amount_display = str(amount).strip()
+        except Exception:
+            amount_display = "не указана"
+
+        # Приводим валюту к стандартному виду
+        currency = currency.upper() if isinstance(currency, str) else ""
+        if currency == "RUB":
+            currency = "RUB"  # Или "₽" если хотите символ рубля
+        elif currency == "USD":
+            currency = "USD"  # Или "$"
+        elif currency == "EUR":
+            currency = "EUR"  # Или "€"
 
         # Формируем результат
         result = f"{date} {description}\n"
@@ -53,9 +72,8 @@ def format_transaction(transaction):
         print(f"Ошибка форматирования транзакции: {e}")
         return f"Не удалось отформатировать транзакцию: {transaction}"
 
-
 def show_statistics(transactions):
-    """Выводит статистику по операциям, используя coun_description"""
+    """Выводит статистику по операциям"""
     common_categories = [
         "Перевод организации",
         "Перевод с карты на карту",
@@ -71,30 +89,23 @@ def show_statistics(transactions):
 
 
 def main():
-    print(
-        """
+    print("""
     Привет! Добро пожаловать в программу работы с банковскими транзакциями.
     Выберите необходимый пункт меню:
     1. Получить информацию о транзакциях из JSON-файла
     2. Получить информацию о транзакциях из CSV-файла
     3. Получить информацию о транзакциях из XLSX-файла
-    """
-    )
+    """)
 
     # Выбор файла
     while True:
-        file_type = input("Выберете номер операции: ").strip()
-        if file_type == "1":
-            print("\nДля обработки выбран JSON-файл.")
-            break
-        elif file_type == "2":
-            print("\nДля обработки выбран CSV-файл.")
-            break
-        elif file_type == "3":
-            print("\nДля обработки выбран XLSX-файл.")
+        file_type = input("Выберите номер операции: ").strip()
+        if file_type in ("1", "2", "3"):
+            file_names = {"1": "JSON", "2": "CSV", "3": "XLSX"}
+            print(f"\nДля обработки выбран {file_names[file_type]}-файл.")
             break
         else:
-            print("Пожалуйста, введите корректный номер: 1,2 или 3")
+            print("Пожалуйста, введите корректный номер: 1, 2 или 3")
 
     # Загрузка данных
     transactions = []
@@ -107,60 +118,89 @@ def main():
             transactions = read_excel_file(PATH_TO_EXCEL)
     except Exception as e:
         print(f"\nОшибка при загрузке файла: {e}")
-        transactions = []  # Явно указываем пустой список
+        return
 
     # Фильтрация по статусу
     while True:
-        print("\nВведите статус, по которому необходимо выполнить фильтрацию.")
-        print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+        print("\nВведите статус для фильтрации:")
+        print("Доступные статусы: EXECUTED, CANCELED, PENDING")
         state = input("Ваш выбор: ").upper().strip()
 
-        if state in ["EXECUTED", "CANCELED", "PENDING"]:
-            transactions = filter_by_state(transactions, state)
-            print(f"\nОперации отфильтрованы по статусу '{state}'")
-            break
+        if state in ("EXECUTED", "CANCELED", "PENDING"):
+            try:
+                filtered = filter_by_state(transactions, state)
+                if not filtered:
+                    print(f"\nНет операций со статусом '{state}'")
+                    return
+                transactions = filtered
+                print(f"\nНайдено {len(transactions)} операций со статусом '{state}'")
+                break
+            except ValueError as e:
+                print(f"\nОшибка при фильтрации: {e}")
+                return
         else:
             print(f'\nСтатус операции "{state}" недоступен')
 
+
     # Сортировка по дате
     while True:
-        sort_choice = input("\nОтсортировать операции по дате? (Да/Нет): ").lower().strip()
-        if sort_choice in ["да", "нет"]:
+        sort_choice = input("\nОтсортировать операции по дате? (да/нет): ").lower().strip()
+        if sort_choice in ("да", "нет"):
             break
 
     if sort_choice == "да":
         while True:
-            sort_order = input("Отсортировать по возрастанию или по убыванию? ").lower().strip()
-            if sort_order in ["по возрастанию", "по убыванию"]:
-                sort_order == "по убыванию"
-                transactions = sort_by_date(transactions, True)
+            sort_order = input("Сортировать по возрастанию или убыванию? ").lower().strip()
+            if sort_order == "возрастанию":
+                transactions = sort_by_date(transactions)
                 break
+            elif sort_order == "убыванию":
+                transactions = sort_by_date(transactions, reverse=True)
+                break
+            else:
+                print("Пожалуйста, введите 'возрастанию' или 'убыванию'")
 
-        # Фильтрация по ключевому слову
+    # Фильтрация по ключевому слову
+    while True:
+        filter_word = input("\nФильтровать по слову в описании? (да/нет): ").lower().strip()
+        if filter_word in ("да", "нет"):
+            break
+
+    if filter_word == "да":
+        keyword = input("Введите ключевое слово (например: Перевод, Открытие): ").strip()
+        transactions = filter_transactions(transactions, keyword)
+        if not transactions:
+            print("Нет операций с таким ключевым словом")
+            return
+
+    # Фильтрация по валюте
+    while True:
+        currency_choice = input("\nФильтровать по валюте? (да/нет): ").lower().strip()
+        if currency_choice in ("да", "нет"):
+            break
+
+    if currency_choice == "да":
         while True:
-            filter_word = input("\nОтфильтровать список транзакций по слову в описании? (Да/Нет): ").lower().strip()
-            if filter_word in ["да", "нет"]:
+            currency = input("Введите валюту (RUB, USD, EUR): ").upper().strip()
+            if currency in ("RUB", "USD", "EUR"):
+                transactions = list(filter_by_currency(transactions, currency))
+                if not transactions:
+                    print(f"Нет операций в валюте {currency}")
+                    return
                 break
-
-        if filter_word == "да":
-            keyword = input("Введите слово для фильтрации: ").strip()
-            transactions = filter_transactions(transactions, keyword)
-
-        else:
-            print("Не корректные данные")
+            else:
+                print("Неверная валюта. Допустимые значения: RUB, USD, EUR")
 
     # Вывод результатов
-    print("\nРаспечатываю итоговый список транзакций...\n")
-    print(f"Всего банковских операций в выборке: {len(transactions)}\n")
+    print("\nИтоговый список транзакций:\n")
+    print(f"Всего операций: {len(transactions)}\n")
 
-    if not transactions:
-        print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
-    else:
-        for transaction in transactions:
-            print(format_transaction(transaction))
-            print("-" * 50)
+    for i, transaction in enumerate(transactions, 1):
+        print(f"Операция #{i}")
+        print(format_transaction(transaction))
+        print("-" * 50)
 
-    if transactions:  # Только если есть транзакции
+    if transactions:
         show_statistics(transactions)
 
 

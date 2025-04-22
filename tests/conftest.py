@@ -2,6 +2,40 @@ import pytest
 
 from src.generators import card_number_generator
 
+#
+# @pytest.fixture
+# def sample_transactions():
+#     return [
+#         {"id": 1, "state": "EXECUTED"},
+#         {"id": 2, "state": "CANCELED"},
+#         {"id": 3, "state": "PENDING"},
+#         {"id": 4, "state": "executed"},  # Проверка регистра
+#         {"id": 5, "state": "canceled"},
+#         {"id": 6, "state": 1},  # Числовой статус (1 = EXECUTED)
+#         {"id": 7, "state": 2.0},  # Числовой статус (2.0 = CANCELED)
+#         {"id": 8},  # Нет статуса
+#         {"id": 9, "state": None},  # None статус
+#         {"id": 10, "state": "INVALID"},  # Неверный статус
+#         "invalid_transaction",  # Некорректная транзакция
+#     ]
+
+
+# # Фикстура для функции filter_by_currency
+# @pytest.fixture
+# def sample_transactions():
+#     return [
+#         {"operationAmount": {"currency": {"code": "USD"}}},
+#         {"currency_code": "EUR"},
+#         {"description": "No currency"},
+#         {"operationAmount": {"currency": {"code": "rub"}}},
+#         {},
+#         None,
+#         {"operationAmount": {"currency": {}}},
+#         {"operationAmount": None},
+#         "invalid_transaction",
+#         12345,
+#     ]
+
 
 # Фикстура, возвращающая список тестовых данных для get_mask_card_number
 @pytest.fixture
